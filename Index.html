@@ -4,27 +4,108 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movimiento del Personaje</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background-image: url(mapa1.jpg);
+            background-size: cover;
+        }
+        
+        .personaje {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            background-size: cover;
+        }
+        
+        #personaje1 {
+            background-image: url('personaje.png');
+            left: 750px;
+            top: 155px;
+        }
+        
+        #personaje2 {
+            background-image: url('personaje2.png');
+            left: 850px;
+            top: 155px;
+        }
+        
+        #personaje3 {
+            background-image: url('personaje3.png');
+            left: 950px;
+            top: 155px;
+        }
+
+        #personaje4 {
+            background-image: url('personaje4.png');
+            left: 1050px;
+            top: 155px;
+        }
+        
+        .panel {
+            position: absolute;
+            margin-top: 650px;
+            margin-left: 1300px;
+        }
+        
+        .start1 {
+            background-color: aquamarine;
+            position: absolute;
+            margin-top: 150px;
+            margin-left: 680px;
+            font-size: xx-large;
+        }
+        
+        .selector {
+            position: absolute;
+            margin-top: 50px;
+            margin-left: 680px;
+            font-size: large;
+        }
+    </style>
 </head>
 <body>
     <div id="personaje1" class="personaje"></div>
     <div id="personaje2" class="personaje"></div>
     <div id="personaje3" class="personaje"></div>
+    <div id="personaje4" class="personaje"></div>
 
     <div class="selector">
         <button onclick="seleccionarPersonaje('personaje1')">Seleccionar Personaje 1</button>
         <button onclick="seleccionarPersonaje('personaje2')">Seleccionar Personaje 2</button>
         <button onclick="seleccionarPersonaje('personaje3')">Seleccionar Personaje 3</button>
-        <button onclick="seleccionarpersonaje('personaje4')">Seleccionar personaje 4</button>
+        <button onclick="seleccionarPersonaje('personaje4')">Seleccionar Personaje 4</button>
     </div>
 
     <button id="startButton" class="start1" onclick="aleatorio()">Start Game</button>
 
     <script>
         var posLeft = 750;
-        var posTop = 147;
+        var posTop = 155;
         var personajeSeleccionado = null;
         var distancia = 5;
+        var frases = [
+            "¡Hola! Soy el personaje 1.",
+            "¡Vamos a hacer esto!",
+            "¡Qué divertido es jugar!",
+            "¿Sabías que puedo saltar?",
+            "¡Aquí vamos de nuevo!",
+            "¡Soy el mejor en esto!",
+            "¡Esto es increíble!",
+            "¡Mucha suerte!",
+            "¡Hagámoslo de nuevo!",
+            "¡Estoy listo para todo!",
+            "¡Amo este juego!",
+            "¡Me encanta este lugar!",
+            "¡Aquí voy!",
+            "¡Esto es lo que quería!",
+            "¡Vamos equipo!",
+            "¡Qué emoción!",
+            "¡No me detendrás!",
+            "¡Este es mi momento!",
+            "¡Nada me detiene!",
+            "¡Es hora de jugar!"
+        ];
+        var frasesUsadas = [];
 
         // Inicialización de eventos de teclado
         document.onkeydown = pulsaTecla;
@@ -35,76 +116,97 @@
             posLeft = parseInt(personajeSeleccionado.style.left);
             posTop = parseInt(personajeSeleccionado.style.top);
             alert('Personaje ' + id + ' seleccionado!');
+            decirFrase(); // Dice una frase cuando se selecciona
         }
 
         // Función para manejar las teclas presionadas
         function pulsaTecla(evento) {
             if (!personajeSeleccionado) return;
 
-            switch(evento.keyCode){
+            var nuevaPosLeft = posLeft;
+            var nuevaPosTop = posTop;
+
+            switch(evento.keyCode) {
                 case 37: // Flecha izquierda
-                    if(posLeft > 0){
-                        posLeft -= distancia;
-                        personajeSeleccionado.style.left = posLeft + 'px';
-                    }
+                    nuevaPosLeft = posLeft - distancia;
                     break;
                 case 38: // Flecha arriba
-                    if(posTop > 0){
-                        posTop -= distancia;
-                        personajeSeleccionado.style.top = posTop + 'px';
-                    }
+                    nuevaPosTop = posTop - distancia;
                     break;
                 case 39: // Flecha derecha
-                    if(posLeft + distancia <= window.innerWidth - 65){
-                        posLeft += distancia;
-                        personajeSeleccionado.style.left = posLeft + 'px';
-                    }
+                    nuevaPosLeft = posLeft + distancia;
                     break;
                 case 40: // Flecha abajo
-                    if(posTop + distancia <= window.innerHeight - 65){
-                        posTop += distancia;
-                        personajeSeleccionado.style.top = posTop + 'px';
-                    }
+                    nuevaPosTop = posTop + distancia;
                     break;
+            }
+
+            // Comprobar si el movimiento es válido
+            if (nuevaPosLeft >= 0 && nuevaPosTop >= 0 &&
+                nuevaPosLeft <= window.innerWidth - 70 && nuevaPosTop <= window.innerHeight - 70 &&
+                !comprobarColision(nuevaPosLeft, nuevaPosTop)) {
+                
+                // Actualizar posición solo si no hay colisión
+                posLeft = nuevaPosLeft;
+                posTop = nuevaPosTop;
+                personajeSeleccionado.style.left = posLeft + 'px';
+                personajeSeleccionado.style.top = posTop + 'px';
             }
         }
 
-        // Función para mover el personaje seleccionado hacia arriba
-        function moverArriba() {
-            if (!personajeSeleccionado) return;
-            posTop -= distancia;
-            personajeSeleccionado.style.top = posTop + 'px';
+      // Función para comprobar si la nueva posición está ocupada por otro personaje
+function comprobarColision(nuevaPosLeft, nuevaPosTop) {
+    var personajes = document.getElementsByClassName('personaje');
+    
+    // Recorremos todos los personajes en la página
+    for (var i = 0; i < personajes.length; i++) {
+        if (personajes[i] !== personajeSeleccionado) {
+            // Obtenemos la posición de los otros personajes
+            var posOtroPersonajeLeft = parseInt(personajes[i].style.left);
+            var posOtroPersonajeTop = parseInt(personajes[i].style.top);
+            
+            // Calculamos las posiciones de la esquina inferior derecha de los personajes
+            var posOtroPersonajeRight = posOtroPersonajeLeft + 70; // 70 es el tamaño del personaje
+            var posOtroPersonajeBottom = posOtroPersonajeTop + 70; // 70 es el tamaño del personaje
+            
+            // Comprobamos si el área de movimiento del personaje actual se solapa con el área de otro personaje
+            if (
+                nuevaPosLeft < posOtroPersonajeRight &&
+                nuevaPosLeft + 70 > posOtroPersonajeLeft &&
+                nuevaPosTop < posOtroPersonajeBottom &&
+                nuevaPosTop + 70 > posOtroPersonajeTop
+            ) {
+                return true; // Hay colisión
+            }
         }
-
-        // Función para mover el personaje seleccionado hacia abajo
-        function moverAbajo() {
-            if (!personajeSeleccionado) return;
-            posTop += distancia;
-            personajeSeleccionado.style.top = posTop + 'px';
-        }
-
-        // Función para mover el personaje seleccionado hacia la izquierda
-        function moverIzquierda() {
-            if (!personajeSeleccionado) return;
-            posLeft -= distancia;
-            personajeSeleccionado.style.left = posLeft + 'px';
-        }
-
-        // Función para mover el personaje seleccionado hacia la derecha
-        function moverDerecha() {
-            if (!personajeSeleccionado) return;
-            posLeft += distancia;
-            personajeSeleccionado.style.left = posLeft + 'px';
-        }
-
+    }
+    
+    return false; // No hay colisión
+}
         // Función para mover el personaje seleccionado a una posición aleatoria
         function aleatorio() {
             if (!personajeSeleccionado) return;
-            posLeft = Math.random() * (window.innerWidth - 50); // Ajustar al tamaño de la pantalla
-            posTop = Math.random() * (window.innerHeight - 50); // Ajustar al tamaño de la pantalla
-            personajeSeleccionado.style.left = posLeft + 'px';
-            personajeSeleccionado.style.top = posTop + 'px';
+            var nuevaPosLeft, nuevaPosTop;
+            do {
+                nuevaPosLeft = Math.random() * (window.innerWidth - 50); // Ajustar al tamaño de la pantalla
+                nuevaPosTop = Math.random() * (window.innerHeight - 50); // Ajustar al tamaño de la pantalla
+            } while (comprobarColision(nuevaPosLeft, nuevaPosTop)); // Comprobar que no haya colisión
+            personajeSeleccionado.style.left = nuevaPosLeft + 'px';
+            personajeSeleccionado.style.top = nuevaPosTop + 'px';
             document.getElementById('startButton').style.display = 'none';
+        }
+
+        // Función para decir una frase aleatoria
+        function decirFrase() {
+            if (frases.length === 0) {
+                frases = [...frasesUsadas]; // Recuperar todas las frases usadas
+                frasesUsadas = []; // Limpiar el array de frases usadas
+            }
+
+            var indice = Math.floor(Math.random() * frases.length);
+            var fraseSeleccionada = frases.splice(indice, 1)[0]; // Seleccionar y eliminar la frase
+            frasesUsadas.push(fraseSeleccionada); // Añadirla a las usadas
+            alert(fraseSeleccionada);
         }
     </script>
 </body>
