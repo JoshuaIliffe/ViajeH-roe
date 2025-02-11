@@ -1,11 +1,160 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Movimiento del Personaje</title>
+    <style>
+        body {
+            background-image: url(mapa1.jpg);
+        }
+
+        .personaje {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            background-size: cover;
+        }
+
+        #personaje1 {
+            background-image: url('personaje.png');
+            left: 750px;
+            top: 155px;
+        }
+
+        #personaje2 {
+            background-image: url('personaje2.png');
+            left: 850px;
+            top: 155px;
+        }
+
+        #personaje3 {
+            background-image: url('personaje3.png');
+            left: 950px;
+            top: 155px;
+        }
+
+        .panel {
+            position: absolute;
+            margin-top: 650px;
+            margin-left: 1300px;
+        }
+
+        .start1 {
+            background-color: aquamarine;
+            position: absolute;
+            margin-top: 150px;
+            margin-left: 680px;
+            font-size: xx-large;
+        }
+
+        .selector {
+            position: absolute;
+            margin-top: 50px;
+            margin-left: 680px;
+            font-size: large;
+        }
+    </style>
 </head>
 <body>
-    
+    <div id="personaje1" class="personaje"></div>
+    <div id="personaje2" class="personaje"></div>
+    <div id="personaje3" class="personaje"></div>
+
+    <div class="selector">
+        <button onclick="seleccionarPersonaje('personaje1')">Seleccionar Personaje 1</button>
+        <button onclick="seleccionarPersonaje('personaje2')">Seleccionar Personaje 2</button>
+        <button onclick="seleccionarPersonaje('personaje3')">Seleccionar Personaje 3</button>
+    </div>
+
+    <button id="startButton" class="start1" onclick="aleatorio()">Start Game</button>
+
+    <script>
+        var posLeft = 750;
+        var posTop = 147;
+        var personajeSeleccionado = null;
+        var distancia = 5;
+
+        // Inicialización de eventos de teclado
+        document.onkeydown = pulsaTecla;
+
+        // Función para seleccionar un personaje
+        function seleccionarPersonaje(id) {
+            personajeSeleccionado = document.getElementById(id);
+            posLeft = parseInt(personajeSeleccionado.style.left);
+            posTop = parseInt(personajeSeleccionado.style.top);
+            alert('Personaje ' + id + ' seleccionado!');
+        }
+
+        // Función para manejar las teclas presionadas
+        function pulsaTecla(evento) {
+            if (!personajeSeleccionado) return;
+
+            switch(evento.keyCode){
+                case 37: // Flecha izquierda
+                    if(posLeft > 0){
+                        posLeft -= distancia;
+                        personajeSeleccionado.style.left = posLeft + 'px';
+                    }
+                    break;
+                case 38: // Flecha arriba
+                    if(posTop > 0){
+                        posTop -= distancia;
+                        personajeSeleccionado.style.top = posTop + 'px';
+                    }
+                    break;
+                case 39: // Flecha derecha
+                    if(posLeft + distancia <= window.innerWidth - 65){
+                        posLeft += distancia;
+                        personajeSeleccionado.style.left = posLeft + 'px';
+                    }
+                    break;
+                case 40: // Flecha abajo
+                    if(posTop + distancia <= window.innerHeight - 65){
+                        posTop += distancia;
+                        personajeSeleccionado.style.top = posTop + 'px';
+                    }
+                    break;
+            }
+        }
+
+        // Función para mover el personaje seleccionado hacia arriba
+        function moverArriba() {
+            if (!personajeSeleccionado) return;
+            posTop -= distancia;
+            personajeSeleccionado.style.top = posTop + 'px';
+        }
+
+        // Función para mover el personaje seleccionado hacia abajo
+        function moverAbajo() {
+            if (!personajeSeleccionado) return;
+            posTop += distancia;
+            personajeSeleccionado.style.top = posTop + 'px';
+        }
+
+        // Función para mover el personaje seleccionado hacia la izquierda
+        function moverIzquierda() {
+            if (!personajeSeleccionado) return;
+            posLeft -= distancia;
+            personajeSeleccionado.style.left = posLeft + 'px';
+        }
+
+        // Función para mover el personaje seleccionado hacia la derecha
+        function moverDerecha() {
+            if (!personajeSeleccionado) return;
+            posLeft += distancia;
+            personajeSeleccionado.style.left = posLeft + 'px';
+        }
+
+        // Función para mover el personaje seleccionado a una posición aleatoria
+        function aleatorio() {
+            if (!personajeSeleccionado) return;
+            posLeft = Math.random() * (window.innerWidth - 50); // Ajustar al tamaño de la pantalla
+            posTop = Math.random() * (window.innerHeight - 50); // Ajustar al tamaño de la pantalla
+            personajeSeleccionado.style.left = posLeft + 'px';
+            personajeSeleccionado.style.top = posTop + 'px';
+            document.getElementById('startButton').style.display = 'none';
+        }
+    </script>
 </body>
 </html>
