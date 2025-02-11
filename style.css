@@ -1,0 +1,55 @@
+body {
+    background-image: url(mapa1.jpg);
+}
+
+.personaje {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    background-size: cover;
+}
+
+#personaje1 {
+    background-image: url('personaje.png');
+    left: 750px;
+    top: 155px;
+}
+
+#personaje2 {
+    background-image: url('personaje2.png');
+    left: 850px;
+    top: 155px;
+}
+
+#personaje3 {
+    background-image: url('personaje3.png');
+    left: 950px;
+    top: 155px;
+}
+
+#personaje4 {
+    background-image: url('personaje4.png');
+    left: 950px;
+    top: 155px;
+}
+
+.panel {
+    position: absolute;
+    margin-top: 650px;
+    margin-left: 1300px;
+}
+
+.start1 {
+    background-color: aquamarine;
+    position: absolute;
+    margin-top: 150px;
+    margin-left: 680px;
+    font-size: xx-large;
+}
+
+.selector {
+    position: absolute;
+    margin-top: 50px;
+    margin-left: 680px;
+    font-size: large;
+}
