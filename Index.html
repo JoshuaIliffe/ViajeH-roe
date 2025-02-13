@@ -65,10 +65,31 @@
             const limiteInferior = areaJuego.offsetHeight - 50; // Resta el tamaño del personaje
 
             // Comprobamos si la nueva posición está dentro de los límites del área del juego
-            return nuevaPosLeft >= limiteIzquierdo &&
-                nuevaPosTop >= limiteSuperior &&
-                nuevaPosLeft <= limiteDerecho &&
-                nuevaPosTop <= limiteInferior;
+            function estaDentroDeArea(nuevaPosLeft, nuevaPosTop) {
+    // Definir los límites del área de juego
+    const limiteIzquierdo = 0;
+    const limiteSuperior = 0;
+    const limiteDerecho = 800;  // por ejemplo, el área del juego tiene un ancho de 800px
+    const limiteInferior = 500; // el área del juego tiene una altura de 500px
+
+
+    // Verificar si la nueva posición está dentro de los límites
+    if (nuevaPosLeft < limiteIzquierdo) {
+        return false; // Si la posición está fuera del límite izquierdo
+    }
+    if (nuevaPosTop < limiteSuperior) {
+        return false; // Si la posición está fuera del límite superior
+    }
+    if (nuevaPosLeft > limiteDerecho) {
+        return false; // Si la posición está fuera del límite derecho
+    }
+    if (nuevaPosTop > limiteInferior) {
+        return false; // Si la posición está fuera del límite inferior
+    }
+
+    // Si ninguna de las condiciones anteriores es verdadera, entonces está dentro del área
+    return true;
+}
         }
 
         // Verificar si una posición está ocupada por otro personaje
