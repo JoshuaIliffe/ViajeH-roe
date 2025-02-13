@@ -33,12 +33,6 @@ body {
     top: 155px;
 }
 
-.panel {
-    position: absolute;
-    margin-top: 650px;
-    margin-left: 1300px;
-}
-
 .start1 {
     background-color: aquamarine;
     position: absolute;
