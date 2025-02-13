@@ -7,10 +7,10 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="personaje1" class="personaje"></div>
-    <div id="personaje2" class="personaje"></div>
-    <div id="personaje3" class="personaje"></div>
-    <div id="personaje4" class="personaje"></div>
+    <div id="personaje1" class="personaje" style="left: 750px; top: 147px;"></div>
+    <div id="personaje2" class="personaje" style="left: 850px; top: 147px;"></div>
+    <div id="personaje3" class="personaje" style="left: 950px; top: 147px;"></div>
+    <div id="personaje4" class="personaje" style="left: 1050px; top: 147px;"></div>
 
     <div class="selector" id="selector">
         <button onclick="seleccionarPersonaje('personaje1')">Seleccionar Personaje 1</button>
@@ -47,40 +47,59 @@
         // Función para seleccionar un personaje
         function seleccionarPersonaje(id) {
             personajeSeleccionado = document.getElementById(id);
-            posLeft = parseInt(personajeSeleccionado.style.left) || 750;
-            posTop = parseInt(personajeSeleccionado.style.top) || 147;
+            posLeft = parseInt(personajeSeleccionado.style.left); // Valor de left directamente
+            posTop = parseInt(personajeSeleccionado.style.top); // Valor de top directamente
             alert('Personaje ' + id + ' seleccionado!');
+        }
+
+        // Verificar si una posición está ocupada por otro personaje
+        function estaOcupado(nuevaPosLeft, nuevaPosTop) {
+            var personajes = document.getElementsByClassName('personaje');
+            for (var i = 0; i < personajes.length; i++) {
+                var personaje = personajes[i];
+                if (personaje !== personajeSeleccionado) {
+                    var personajeLeft = parseInt(personaje.style.left); // Usamos parseInt para obtener la posición
+                    var personajeTop = parseInt(personaje.style.top); // Usamos parseInt también para top
+                    
+                    // Comprobamos si las posiciones de los personajes se solapan
+                    if (nuevaPosLeft < personajeLeft + 50 && nuevaPosLeft + 50 > personajeLeft &&
+                        nuevaPosTop < personajeTop + 50 && nuevaPosTop + 50 > personajeTop) {
+                        return true; // Si hay colisión, está ocupado
+                    }
+                }
+            }
+            return false; // Si no hay colisión, la posición está libre
         }
 
         // Manejo de teclas para mover el personaje seleccionado
         document.onkeydown = function(evento) {
             if (!personajeSeleccionado) return;
 
+            var nuevaPosLeft = posLeft;
+            var nuevaPosTop = posTop;
+
             switch(evento.keyCode) {
                 case 37: // Izquierda
-                    if (posLeft > 0) {
-                        posLeft -= distancia;
-                        personajeSeleccionado.style.left = posLeft + 'px';
-                    }
+                    nuevaPosLeft = posLeft - distancia;
                     break;
                 case 38: // Arriba
-                    if (posTop > 0) {
-                        posTop -= distancia;
-                        personajeSeleccionado.style.top = posTop + 'px';
-                    }
+                    nuevaPosTop = posTop - distancia;
                     break;
                 case 39: // Derecha
-                    if (posLeft + distancia <= window.innerWidth - 65) {
-                        posLeft += distancia;
-                        personajeSeleccionado.style.left = posLeft + 'px';
-                    }
+                    nuevaPosLeft = posLeft + distancia;
                     break;
                 case 40: // Abajo
-                    if (posTop + distancia <= window.innerHeight - 65) {
-                        posTop += distancia;
-                        personajeSeleccionado.style.top = posTop + 'px';
-                    }
+                    nuevaPosTop = posTop + distancia;
                     break;
+            }
+
+            // Verificar si la nueva posición está ocupada
+            if (!estaOcupado(nuevaPosLeft, nuevaPosTop)) {
+                // Si no está ocupada, actualizamos la posición
+                posLeft = nuevaPosLeft;
+                posTop = nuevaPosTop;
+                personajeSeleccionado.style.left = posLeft + 'px';
+                personajeSeleccionado.style.top = posTop + 'px';
             }
         };
     </script>

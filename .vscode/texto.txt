@@ -215,3 +215,114 @@ falta las frases de los personajes
     </script>
 </body>
 </html>    
+
+
+
+====================VErsion 3=============================
+<!DOCTYPE html> 
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movimiento del Personaje</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="personaje1" class="personaje" style="left: 750px; top: 147px;"></div>
+    <div id="personaje2" class="personaje" style="left: 850px; top: 147px;"></div>
+    <div id="personaje3" class="personaje" style="left: 950px; top: 147px;"></div>
+    <div id="personaje4" class="personaje" style="left: 1050px; top: 147px;"></div>
+
+    <div class="selector" id="selector">
+        <button onclick="seleccionarPersonaje('personaje1')">Seleccionar Personaje 1</button>
+        <button onclick="seleccionarPersonaje('personaje2')">Seleccionar Personaje 2</button>
+        <button onclick="seleccionarPersonaje('personaje3')">Seleccionar Personaje 3</button>
+        <button onclick="seleccionarPersonaje('personaje4')">Seleccionar Personaje 4</button>
+    </div>
+
+    <button id="startButton" class="start1" onclick="iniciarJuego()">Start Game</button>
+
+    <script>
+        var posLeft = 750;
+        var posTop = 147;
+        var personajeSeleccionado = null;
+        var distancia = 5;
+
+        // Ocultar personajes y botones de selección al inicio
+        document.getElementById('personaje1').style.display = 'none';
+        document.getElementById('personaje2').style.display = 'none';
+        document.getElementById('personaje3').style.display = 'none';
+        document.getElementById('personaje4').style.display = 'none';
+        document.getElementById('selector').style.display = 'none';
+
+        // Función para iniciar el juego
+        function iniciarJuego() {
+            document.getElementById('personaje1').style.display = 'block';
+            document.getElementById('personaje2').style.display = 'block';
+            document.getElementById('personaje3').style.display = 'block';
+            document.getElementById('personaje4').style.display = 'block';
+            document.getElementById('selector').style.display = 'block';
+            document.getElementById('startButton').style.display = 'none';
+        }
+
+        // Función para seleccionar un personaje
+        function seleccionarPersonaje(id) {
+            personajeSeleccionado = document.getElementById(id);
+            posLeft = parseInt(personajeSeleccionado.style.left); // Valor de left directamente
+            posTop = parseInt(personajeSeleccionado.style.top); // Valor de top directamente
+            alert('Personaje ' + id + ' seleccionado!');
+        }
+
+        // Verificar si una posición está ocupada por otro personaje
+        function estaOcupado(nuevaPosLeft, nuevaPosTop) {
+            var personajes = document.getElementsByClassName('personaje');
+            for (var i = 0; i < personajes.length; i++) {
+                var personaje = personajes[i];
+                if (personaje !== personajeSeleccionado) {
+                    var personajeLeft = parseInt(personaje.style.left); // Usamos parseInt para obtener la posición
+                    var personajeTop = parseInt(personaje.style.top); // Usamos parseInt también para top
+                    
+                    // Comprobamos si las posiciones de los personajes se solapan
+                    if (nuevaPosLeft < personajeLeft + 50 && nuevaPosLeft + 50 > personajeLeft &&
+                        nuevaPosTop < personajeTop + 50 && nuevaPosTop + 50 > personajeTop) {
+                        return true; // Si hay colisión, está ocupado
+                    }
+                }
+            }
+            return false; // Si no hay colisión, la posición está libre
+        }
+
+        // Manejo de teclas para mover el personaje seleccionado
+        document.onkeydown = function(evento) {
+            if (!personajeSeleccionado) return;
+
+            var nuevaPosLeft = posLeft;
+            var nuevaPosTop = posTop;
+
+            switch(evento.keyCode) {
+                case 37: // Izquierda
+                    nuevaPosLeft = posLeft - distancia;
+                    break;
+                case 38: // Arriba
+                    nuevaPosTop = posTop - distancia;
+                    break;
+                case 39: // Derecha
+                    nuevaPosLeft = posLeft + distancia;
+                    break;
+                case 40: // Abajo
+                    nuevaPosTop = posTop + distancia;
+                    break;
+            }
+
+            // Verificar si la nueva posición está ocupada
+            if (!estaOcupado(nuevaPosLeft, nuevaPosTop)) {
+                // Si no está ocupada, actualizamos la posición
+                posLeft = nuevaPosLeft;
+                posTop = nuevaPosTop;
+                personajeSeleccionado.style.left = posLeft + 'px';
+                personajeSeleccionado.style.top = posTop + 'px';
+            }
+        };
+    </script>
+</body>
+</html>
