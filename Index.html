@@ -5,38 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movimiento del Personaje</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .personaje {
-            width: 50px;
-            height: 50px;
-            position: absolute;
-        }
-        .selector {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-        }
-        #startButton {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-    </style>
 </head>
 <body>
-    <div id="personaje1" class="personaje" style="left: 750px; top: 147px;"></div>
-    <div id="personaje2" class="personaje" style="left: 850px; top: 147px;"></div>
-    <div id="personaje3" class="personaje" style="left: 950px; top: 147px;"></div>
-    <div id="personaje4" class="personaje" style="left: 1050px; top: 147px;"></div>
+
+    <div id="gameArea">
+        <div id="personaje1" class="personaje" style="left: 750px; top: 147px;"></div>
+        <div id="personaje2" class="personaje" style="left: 850px; top: 147px;"></div>
+        <div id="personaje3" class="personaje" style="left: 950px; top: 147px;"></div>
+        <div id="personaje4" class="personaje" style="left: 1050px; top: 147px;"></div>
+    </div>
 
     <div class="selector" id="selector">
         <button onclick="seleccionarPersonaje('personaje1')">Seleccionar Personaje 1</button>
@@ -73,6 +50,42 @@
             posLeft = parseInt(personajeSeleccionado.style.left);
             posTop = parseInt(personajeSeleccionado.style.top);
             alert('Personaje ' + id + ' seleccionado!');
+        }
+
+        // Verificar si la posición está dentro del área permitida
+        function estaDentroDeArea(nuevaPosLeft, nuevaPosTop) {
+            const areaJuego = document.getElementById('gameArea');
+            const limiteIzquierdo = 0;
+            const limiteSuperior = 0;
+            const limiteDerecho = areaJuego.offsetWidth - 50; // Resta el tamaño del personaje
+            const limiteInferior = areaJuego.offsetHeight - 50; // Resta el tamaño del personaje
+
+            // Comprobamos si la nueva posición está dentro de los límites del área del juego
+            function estaDentroDeArea(nuevaPosLeft, nuevaPosTop) {
+    // Definir los límites del área de juego
+    const limiteIzquierdo = 0;
+    const limiteSuperior = 0;
+    const limiteDerecho = 800;  // por ejemplo, el área del juego tiene un ancho de 800px
+    const limiteInferior = 500; // el área del juego tiene una altura de 500px
+
+
+    // Verificar si la nueva posición está dentro de los límites
+    if (nuevaPosLeft < limiteIzquierdo) {
+        return false; // Si la posición está fuera del límite izquierdo
+    }
+    if (nuevaPosTop < limiteSuperior) {
+        return false; // Si la posición está fuera del límite superior
+    }
+    if (nuevaPosLeft > limiteDerecho) {
+        return false; // Si la posición está fuera del límite derecho
+    }
+    if (nuevaPosTop > limiteInferior) {
+        return false; // Si la posición está fuera del límite inferior
+    }
+
+    // Si ninguna de las condiciones anteriores es verdadera, entonces está dentro del área
+    return true;
+}
         }
 
         function estaOcupado(nuevaPosLeft, nuevaPosTop) {
@@ -125,7 +138,9 @@
                     break;
             }
 
+            // Verificar si la nueva posición está ocupada
             if (!estaOcupado(nuevaPosLeft, nuevaPosTop)) {
+                // Si no está ocupada, actualizamos la posición
                 posLeft = nuevaPosLeft;
                 posTop = nuevaPosTop;
                 personajeSeleccionado.style.left = posLeft + 'px';
