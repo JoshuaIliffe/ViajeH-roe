@@ -5,12 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movimiento del Personaje</title>
     <link rel="stylesheet" href="style.css">
+
 </head>
 <body>
-    <div id="personaje1" class="personaje" style="left: 750px; top: 147px;"></div>
-    <div id="personaje2" class="personaje" style="left: 850px; top: 147px;"></div>
-    <div id="personaje3" class="personaje" style="left: 950px; top: 147px;"></div>
-    <div id="personaje4" class="personaje" style="left: 1050px; top: 147px;"></div>
+
+    <div id="gameArea">
+        <div id="personaje1" class="personaje" style="left: 750px; top: 147px;"></div>
+        <div id="personaje2" class="personaje" style="left: 850px; top: 147px;"></div>
+        <div id="personaje3" class="personaje" style="left: 950px; top: 147px;"></div>
+        <div id="personaje4" class="personaje" style="left: 1050px; top: 147px;"></div>
+    </div>
 
     <div class="selector" id="selector">
         <button onclick="seleccionarPersonaje('personaje1')">Seleccionar Personaje 1</button>
@@ -50,6 +54,21 @@
             posLeft = parseInt(personajeSeleccionado.style.left); // Valor de left directamente
             posTop = parseInt(personajeSeleccionado.style.top); // Valor de top directamente
             alert('Personaje ' + id + ' seleccionado!');
+        }
+
+        // Verificar si la posición está dentro del área permitida
+        function estaDentroDeArea(nuevaPosLeft, nuevaPosTop) {
+            const areaJuego = document.getElementById('gameArea');
+            const limiteIzquierdo = 0;
+            const limiteSuperior = 0;
+            const limiteDerecho = areaJuego.offsetWidth - 50; // Resta el tamaño del personaje
+            const limiteInferior = areaJuego.offsetHeight - 50; // Resta el tamaño del personaje
+
+            // Comprobamos si la nueva posición está dentro de los límites del área del juego
+            return nuevaPosLeft >= limiteIzquierdo &&
+                nuevaPosTop >= limiteSuperior &&
+                nuevaPosLeft <= limiteDerecho &&
+                nuevaPosTop <= limiteInferior;
         }
 
         // Verificar si una posición está ocupada por otro personaje
@@ -93,9 +112,9 @@
                     break;
             }
 
-            // Verificar si la nueva posición está ocupada
-            if (!estaOcupado(nuevaPosLeft, nuevaPosTop)) {
-                // Si no está ocupada, actualizamos la posición
+            // Verificar si la nueva posición está dentro del área y no está ocupada
+            if (estaDentroDeArea(nuevaPosLeft, nuevaPosTop) && !estaOcupado(nuevaPosLeft, nuevaPosTop)) {
+                // Si no está ocupada y está dentro del área, actualizamos la posición
                 posLeft = nuevaPosLeft;
                 posTop = nuevaPosTop;
                 personajeSeleccionado.style.left = posLeft + 'px';
