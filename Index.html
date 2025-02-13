@@ -1,16 +1,26 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movimiento del Personaje</title>
+    <title>Juego de Personajes</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<<<<<<< Updated upstream
     <div id="personaje1" class="personaje" style="left: 750px; top: 147px;"></div>
     <div id="personaje2" class="personaje" style="left: 850px; top: 147px;"></div>
     <div id="personaje3" class="personaje" style="left: 950px; top: 147px;"></div>
     <div id="personaje4" class="personaje" style="left: 1050px; top: 147px;"></div>
+=======
+
+    <div id="gameArea">
+        <div id="personaje1" class="personaje"></div>
+        <div id="personaje2" class="personaje"></div>
+        <div id="personaje3" class="personaje"></div>
+        <div id="personaje4" class="personaje"></div>
+    </div>
+>>>>>>> Stashed changes
 
     <div class="selector" id="selector">
         <button onclick="seleccionarPersonaje('personaje1')">Seleccionar Personaje 1</button>
@@ -19,13 +29,40 @@
         <button onclick="seleccionarPersonaje('personaje4')">Seleccionar Personaje 4</button>
     </div>
 
-    <button id="startButton" class="start1" onclick="iniciarJuego()">Start Game</button>
+    <button id="startButton" onclick="iniciarJuego()">Iniciar Juego</button>
+
+    <div id="dialogo"></div>
 
     <script>
-        var posLeft = 750;
-        var posTop = 147;
-        var personajeSeleccionado = null;
-        var distancia = 5;
+        const frases = [
+            "¡Hola, soy el personaje 1!",
+            "¡Estoy listo para la aventura!",
+            "¡Vamos a movernos!",
+            "¡Mucha energía para hoy!",
+            "¡Me encanta este juego!",
+            "¡Sigo adelante!",
+            "¡Aquí estoy!",
+            "¡Qué divertido!",
+            "¡No puedo parar!",
+            "¡Vamos con todo!",
+            "¡Un paso más!",
+            "¡Este es mi momento!",
+            "¡Vamos a movernos rápido!",
+            "¡Estoy lleno de energía!",
+            "¡Estoy en control!",
+            "¡Miremos hacia adelante!",
+            "¡Estoy haciendo grandes avances!",
+            "¡No me detengo!",
+            "¡Soy invencible!",
+            "¡Vamos a ganar!"
+        ];
+
+        let personajes = [];
+        let personajeSeleccionado = null;
+        let posLeft = 750;
+        let posTop = 147;
+        let distancia = 5;
+        let frasesRestantes = {};
 
         // Ocultar personajes y botones de selección al inicio
         document.getElementById('personaje1').style.display = 'none';
@@ -42,11 +79,61 @@
             document.getElementById('personaje4').style.display = 'block';
             document.getElementById('selector').style.display = 'block';
             document.getElementById('startButton').style.display = 'none';
+            crearPersonaje('personaje1');
+            crearPersonaje('personaje2');
+            crearPersonaje('personaje3');
+            crearPersonaje('personaje4');
+        }
+
+        // Función para crear personajes
+        function crearPersonaje(id) {
+            let personaje = document.getElementById(id);
+            let pos = obtenerPosicionAleatoria();
+            while (posEstaOcupada(pos)) {
+                pos = obtenerPosicionAleatoria();
+            }
+            personaje.style.left = `${pos.x}px`;
+            personaje.style.top = `${pos.y}px`;
+            personaje.style.backgroundColor = 'red';
+
+            // Inicializamos el conjunto de frases para cada personaje
+            frasesRestantes[id] = [...frases];
+
+            personaje.onclick = function() {
+                seleccionarPersonaje(id);
+                mostrarFraseAleatoria(id);
+            };
+
+            personajes.push(personaje);
+        }
+
+        // Función para obtener una posición aleatoria dentro de los límites
+        function obtenerPosicionAleatoria() {
+            const maxX = window.innerWidth - 50;
+            const maxY = window.innerHeight - 50;
+            const x = Math.floor(Math.random() * maxX);
+            const y = Math.floor(Math.random() * maxY);
+            return { x, y };
+        }
+
+        // Función para verificar si una posición está ocupada
+        function posEstaOcupada(pos) {
+            for (let i = 0; i < personajes.length; i++) {
+                const p = personajes[i];
+                const pX = parseInt(p.style.left);
+                const pY = parseInt(p.style.top);
+                if (Math.abs(pX - pos.x) < 50 && Math.abs(pY - pos.y) < 50) {
+                    console.log("¡Colisión detectada! Intentando nueva posición.");
+                    return true;
+                }
+            }
+            return false;
         }
 
         // Función para seleccionar un personaje
         function seleccionarPersonaje(id) {
             personajeSeleccionado = document.getElementById(id);
+<<<<<<< Updated upstream
             posLeft = parseInt(personajeSeleccionado.style.left); // Valor de left directamente
             posTop = parseInt(personajeSeleccionado.style.top); // Valor de top directamente
             alert('Personaje ' + id + ' seleccionado!');
@@ -69,12 +156,33 @@
                 }
             }
             return false; // Si no hay colisión, la posición está libre
+=======
+            posLeft = parseInt(personajeSeleccionado.style.left);
+            posTop = parseInt(personajeSeleccionado.style.top);
+            alert('Personaje ' + id + ' seleccionado!');
+        }
+
+        // Función para mostrar una frase aleatoria del personaje seleccionado
+        function mostrarFraseAleatoria(id) {
+            if (frasesRestantes[id].length === 0) {
+                frasesRestantes[id] = [...frases]; // Restaurar las frases cuando se agotaron todas.
+                document.getElementById('dialogo').innerText = "¡Ya no tengo más frases que decir!";
+                return;
+            }
+
+            const randomIndex = Math.floor(Math.random() * frasesRestantes[id].length);
+            const frase = frasesRestantes[id][randomIndex];
+
+            frasesRestantes[id].splice(randomIndex, 1); // Eliminar la frase seleccionada.
+            document.getElementById('dialogo').innerText = frase;
+>>>>>>> Stashed changes
         }
 
         // Manejo de teclas para mover el personaje seleccionado
         document.onkeydown = function(evento) {
             if (!personajeSeleccionado) return;
 
+<<<<<<< Updated upstream
             var nuevaPosLeft = posLeft;
             var nuevaPosTop = posTop;
 
@@ -96,6 +204,28 @@
             // Verificar si la nueva posición está ocupada
             if (!estaOcupado(nuevaPosLeft, nuevaPosTop)) {
                 // Si no está ocupada, actualizamos la posición
+=======
+            let nuevaPosLeft = posLeft;
+            let nuevaPosTop = posTop;
+
+            switch(evento.keyCode) {
+                case 37: // Izquierda
+                    if (posLeft > 0) nuevaPosLeft -= distancia;
+                    break;
+                case 38: // Arriba
+                    if (posTop > 0) nuevaPosTop -= distancia;
+                    break;
+                case 39: // Derecha
+                    if (posLeft + distancia <= window.innerWidth - 50) nuevaPosLeft += distancia;
+                    break;
+                case 40: // Abajo
+                    if (posTop + distancia <= window.innerHeight - 50) nuevaPosTop += distancia;
+                    break;
+            }
+
+            // Verificar si la nueva posición está ocupada antes de mover
+            if (!posEstaOcupada({x: nuevaPosLeft, y: nuevaPosTop})) {
+>>>>>>> Stashed changes
                 posLeft = nuevaPosLeft;
                 posTop = nuevaPosTop;
                 personajeSeleccionado.style.left = posLeft + 'px';
@@ -103,5 +233,6 @@
             }
         };
     </script>
+
 </body>
 </html>
