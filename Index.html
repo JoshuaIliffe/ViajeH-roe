@@ -20,11 +20,27 @@
             top: 10px;
             left: 10px;
         }
+        
         #startButton {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+        }
+        
+        /* Estilo básico para el botón "Hablar" */
+        #hablarButton {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 18px;
+        }
+        
+        .personaje {
+            width: 80px;
+            height: 80px;
+            position: absolute;
         }
     </style>
 </head>
@@ -42,12 +58,39 @@
     </div>
 
     <button id="startButton" onclick="iniciarJuego()">Start Game</button>
+    <button id="hablarButton" onclick="hablar()">Hablar</button>
+
+    <div id="frasesContainer"></div>
 
     <script>
         var posLeft = 750;
         var posTop = 147;
         var personajeSeleccionado = null;
         var distancia = 5;
+        var fraseIndex = 0;
+
+        var frases = [
+            "¡Hola! Soy el personaje.",
+            "¿Qué tal, cómo va todo?",
+            "Estoy listo para la aventura.",
+            "Este es el inicio de un gran viaje.",
+            "¿Sabías que los personajes siempre tienen algo interesante que decir?",
+            "Mi misión es clara y nada me detendrá.",
+            "No puedo esperar para ver qué sucede.",
+            "Cada paso que doy me acerca más a mi objetivo.",
+            "Nunca subestimes el poder de un personaje determinado.",
+            "¿Te has fijado en los detalles de este mundo?",
+            "Mi historia está llena de misterios por descubrir.",
+            "Cada vez que hablo, algo importante sucede.",
+            "La gente siempre me pregunta si soy invencible... y la respuesta es sí.",
+            "¿Te has encontrado con alguien tan valiente como yo?",
+            "La aventura nunca es aburrida cuando estoy cerca.",
+            "No todo es lo que parece en este mundo.",
+            "Siempre me han dicho que tengo el poder de cambiar el destino.",
+            "¿Quién sabe qué desafíos enfrentaré después?",
+            "La vida de un personaje nunca es aburrida.",
+            "No tengo nada más que decir."
+        ];
 
         document.getElementById('personaje1').style.display = 'none';
         document.getElementById('personaje2').style.display = 'none';
@@ -62,31 +105,46 @@
             document.getElementById('personaje4').style.display = 'block';
             document.getElementById('selector').style.display = 'block';
             document.getElementById('startButton').style.display = 'none';
+            document.getElementById('hablarButton').style.display = 'block';
         }
 
         function seleccionarPersonaje(id) {
             personajeSeleccionado = document.getElementById(id);
-            posLeft = parseInt(personajeSeleccionado.style.left);
-            posTop = parseInt(personajeSeleccionado.style.top);
+            moverAleatorio(personajeSeleccionado);
+            fraseIndex = 0; // Reiniciar el índice de frases al seleccionar un personaje
+            document.getElementById('frasesContainer').innerHTML = ''; // Limpiar las frases previas
+            document.getElementById('hablarButton').disabled = false; // Habilitar el botón de "Hablar" nuevamente
             alert('Personaje ' + id + ' seleccionado!');
         }
 
-        function estaOcupado(nuevaPosLeft, nuevaPosTop) {
-            var personajes = document.getElementsByClassName('personaje');
-            for (var i = 0; i < personajes.length; i++) {
-                var personaje = personajes[i];
-                if (personaje !== personajeSeleccionado) {
-                    var personajeLeft = parseInt(personaje.style.left);
-                    var personajeTop = parseInt(personaje.style.top);
+        // Función que mueve el personaje a una posición aleatoria dentro de la pantalla
+        function moverAleatorio(personaje) {
+            var screenWidth = window.innerWidth;
+            var screenHeight = window.innerHeight;
+            var characterSize = 80; // Tamaño del personaje (80x80px)
+            
+            // Calcular una posición aleatoria dentro de los límites de la pantalla
+            var randomLeft = Math.floor(Math.random() * (screenWidth - characterSize));
+            var randomTop = Math.floor(Math.random() * (screenHeight - characterSize));
 
-                    if (nuevaPosLeft < personajeLeft + 50 && nuevaPosLeft + 50 > personajeLeft &&
-                        nuevaPosTop < personajeTop + 50 && nuevaPosTop + 50 > personajeTop) {
-                        return true;
-                    }
-                }
-            }
-            return false;
+            // Asignar la nueva posición al personaje
+            personaje.style.left = randomLeft + 'px';
+            personaje.style.top = randomTop + 'px';
+
+            // Guardar las posiciones para el movimiento con las teclas
+            posLeft = randomLeft;
+            posTop = randomTop;
         }
+
+        function hablar() {
+    if (fraseIndex < frases.length) {
+        // Insertar directamente el contenido en el contenedor
+        document.getElementById('frasesContainer').innerHTML = frases[fraseIndex];
+        fraseIndex++;
+    } else {
+        document.getElementById('hablarButton').disabled = true; // Deshabilitar el botón al llegar al final
+    }
+}
 
         document.onkeydown = function(evento) {
             if (!personajeSeleccionado) return;
@@ -96,31 +154,32 @@
 
             var screenWidth = window.innerWidth;
             var screenHeight = window.innerHeight;
-            var characterSize = 50; 
+            var characterSize = 80; // Tamaño del personaje (80x80px)
 
             switch(evento.keyCode) {
-                case 37:
+                case 37: // Flecha izquierda
                     if (posLeft - distancia >= 0) {
                         nuevaPosLeft = posLeft - distancia;
                     }
                     break;
-                case 38:
+                case 38: // Flecha arriba
                     if (posTop - distancia >= 0) {
                         nuevaPosTop = posTop - distancia;
                     }
                     break;
-                case 39:
+                case 39: // Flecha derecha
                     if (posLeft + distancia + characterSize <= screenWidth) {
                         nuevaPosLeft = posLeft + distancia;
                     }
                     break;
-                case 40:
+                case 40: // Flecha abajo
                     if (posTop + distancia + characterSize <= screenHeight) {
                         nuevaPosTop = posTop + distancia;
                     }
                     break;
             }
 
+            // Asegurarse de que el personaje no se sobreponga con otro
             if (!estaOcupado(nuevaPosLeft, nuevaPosTop)) {
                 posLeft = nuevaPosLeft;
                 posTop = nuevaPosTop;
@@ -128,6 +187,29 @@
                 personajeSeleccionado.style.top = posTop + 'px';
             }
         };
+
+        function estaOcupado(nuevaPosLeft, nuevaPosTop) {
+    var personajes = document.getElementsByClassName('personaje');
+    for (var i = 0; i < personajes.length; i++) {
+        var personaje = personajes[i];
+        if (personaje !== personajeSeleccionado) {
+            var personajeLeft = parseInt(personaje.style.left);
+            var personajeTop = parseInt(personaje.style.top);
+
+    if (nuevaPosLeft < personajeLeft + 50) {
+        if (nuevaPosLeft + 50 > personajeLeft) {
+            if (nuevaPosTop < personajeTop + 50) {
+                if (nuevaPosTop + 50 > personajeTop) {
+                    return true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return false;
+}
+
     </script>
 </body>
 </html>
