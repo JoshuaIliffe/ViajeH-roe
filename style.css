@@ -1,55 +1,56 @@
 body {
-    background-image: url(mapa1.jpg);
+    margin: 0;
+    padding: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('fondo.jpg');
+    background-size: 81%;
 }
 
-.personaje {
+h1 {
+    color: white;
+    font-family: Arial, sans-serif;
+    font-size: 48px;
+    position: absolute;
+    top: 10%;
+    left: 50%;
+}
+
+img.surv1, img.surv2, img.surv3, img.surv4, img.surv5 {
     position: absolute;
     width: 70px;
     height: 70px;
-    background-size: cover;
 }
 
-#personaje1 {
-    background-image: url('personaje.png');
-    left: 750px;
-    top: 155px;
-}
-
-#personaje2 {
-    background-image: url('personaje2.png');
-    left: 850px;
-    top: 155px;
-}
-
-#personaje3 {
-    background-image: url('personaje3.png');
-    left: 950px;
-    top: 155px;
-}
-
-#personaje4 {
-    background-image: url('personaje4.png');
-    left: 950px;
-    top: 155px;
-}
-
-.panel {
+#helicoptero {
     position: absolute;
-    margin-top: 650px;
-    margin-left: 1300px;
+    width: 300px; 
+    height: 300px;
+    background-image: url('Helicóptero.gif'); 
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 
-.start1 {
-    background-color: aquamarine;
+#base {
     position: absolute;
-    margin-top: 150px;
-    margin-left: 680px;
-    font-size: xx-large;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    top: 80%;
+    left: 50%;
 }
 
-.selector {
+#startButton {
     position: absolute;
-    margin-top: 50px;
-    margin-left: 680px;
-    font-size: large;
+    bottom: 50px; 
+    left: 50%; 
+   
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
 }
