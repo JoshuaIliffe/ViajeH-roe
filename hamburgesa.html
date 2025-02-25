@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hamburguesería - Sistema de Pedidos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div id="pedido">
+        <h1>Hamburgueseria Mae West</h1>
+
+        <h3>Selecciona tu producto principal:</h3>
+        <select id="producto">
+            <option value="hamburguesa">Hamburguesa - 8.00€</option>
+            <option value="perrito_caliente">Perrito Caliente - 3.50€</option>
+            <option value="bocadillo">Bocadillo - 5.00€</option>
+        </select>
+
+        <h3>Ingredientes base:</h3>
+        <div>
+            <label><input type="checkbox" value="pan"> Pan</label>
+            <label><input type="checkbox" value="carne"> Carne</label>
+            <label><input type="checkbox" value="lechuga"> Lechuga</label>
+            <label><input type="checkbox" value="tomate"> Tomate</label>
+            <label><input type="checkbox" value="queso"> Queso</label>
+        </div>
+
+        <h3>Ingredientes opcionales (0.50€ cada uno):</h3>
+        <div>
+            <label><input type="checkbox" value="bacon"> Bacon</label>
+            <label><input type="checkbox" value="cebolla_caramelizada"> Cebolla Caramelizada</label>
+            <label><input type="checkbox" value="huevo_frito"> Huevo Frito</label>
+            <label><input type="checkbox" value="champiñones"> Champiñones</label>
+            <label><input type="checkbox" value="jalapenos"> Jalapeños</label>
+            <label><input type="checkbox" value="mayonesa_especial"> Mayonesa Especial</label>
+        </div>
+
+        <h3>Complementos:</h3>
+        <div>
+            <label><input type="checkbox" value="patatas"> Patatas Fritas - 2.00€</label>
+            <label><input type="checkbox" value="ensalada"> Ensalada - 1.50€</label>
+            <label><input type="checkbox" value="aros_cebolla"> Aros de Cebolla - 2.50€</label>
+        </div>
+
+        <h3>Bebidas:</h3>
+        <select id="bebidas">
+            <option value="agua">Agua - 1.50€</option>
+            <option value="refresco">Refresco - 2.50€</option>
+            <option value="cerveza">Cerveza Sin Alcohol - 2.00€</option>
+        </select>
+
+        <h3>Cantidad (máximo 50):</h3>
+        <input type="number" id="cantidad" min="1" max="50" value="1">
+
+        <h3>Precio Total:</h3>
+        <div id="precio-total">0 €</div>
+
+        <button id="confirmar-pedido">Confirmar Pedido</button>
+    </div>
+
+    <div id="display">
+        <h3>Pedidos Confirmados</h3>
+        <ul id="lista-pedidos">
+        </ul>
+    </div>
+
+    <script>
+        // Precios de productos y opciones
+        var precios = {
+            "hamburguesa": 8.00,
+            "perrito_caliente": 3.50,
+            "bocadillo": 5.00,
+            "bacon": 0.50,
+            "cebolla_caramelizada": 0.50,
+            "huevo_frito": 0.50,
+            "champiñones": 0.50,
+            "jalapenos": 0.50,
+            "mayonesa_especial": 0.50,
+            "patatas": 2.00,
+            "ensalada": 1.50,
+            "aros_cebolla": 2.50,
+            "agua": 1.50,
+            "refresco": 2.50,
+            "cerveza": 2.00
+        };
+
+        // Función para calcular el precio total del pedido
+        function calcularPrecio() {
+            var producto = document.getElementById('producto').value;
+            var precioTotal = precios[producto]; // Empezamos con el precio del producto principal
+
+            // Ingredientes base seleccionados (fijos, no suman costo adicional)
+            var ingredientesBase = document.querySelectorAll('input[type="checkbox"]:checked');
+            for (var i = 0; i < ingredientesBase.length; i++) {
+                precioTotal += precios[ingredientesBase[i].value] || 0; // Si no hay precio, suma 0
+            }
+
+            // Bebida seleccionada
+            var bebida = document.getElementById('bebidas').value;
+            precioTotal += precios[bebida];
+
+            // Complementos seleccionados (con precio adicional)
+            var complementos = document.querySelectorAll('input[type="checkbox"]:checked');
+            for (var i = 0; i < complementos.length; i++) {
+                precioTotal += precios[complementos[i].value] || 0; // Sumamos el precio de los complementos
+            }
+
+            // Cantidad seleccionada
+            var cantidad = parseInt(document.getElementById('cantidad').value) || 1; // Si no se introduce cantidad, tomamos 1
+            precioTotal *= cantidad; // Multiplicamos el precio por la cantidad
+
+            // Mostrar el precio total en la interfaz
+            document.getElementById('precio-total').textContent = precioTotal + " €"; // Ahora no usamos toFixed
+        }
+
+        // Función para confirmar el pedido
+        function confirmarPedido() {
+            var producto = document.getElementById('producto').value;
+            var cantidad = document.getElementById('cantidad').value;
+            var precioTotal = document.getElementById('precio-total').textContent;
+
+            // Crear un nuevo elemento de lista para mostrar el pedido
+            var li = document.createElement('li');
+            li.textContent = "Pedido: " + producto + " | Cantidad: " + cantidad + " | Precio Total: " + precioTotal;
+            document.getElementById('lista-pedidos').appendChild(li);
+
+            // Limpiar campos después de confirmar el pedido
+            document.getElementById('pedido').reset();
+            document.getElementById('precio-total').textContent = "0 €";
+        }
+
+        // Evento para confirmar el pedido
+        document.getElementById('confirmar-pedido').onclick = confirmarPedido;
+
+        // Calcular precio cada vez que el usuario haga un cambio en el pedido
+        document.getElementById('producto').onchange = calcularPrecio;
+        document.getElementById('bebidas').onchange = calcularPrecio;
+        document.getElementById('cantidad').onchange = calcularPrecio;
+        
+        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(function(checkbox) {
+            checkbox.onchange = calcularPrecio;
+        });
+
+        // Inicializamos el precio al cargar la página
+        calcularPrecio();
+    </script>
+
+</body>
+</html>
